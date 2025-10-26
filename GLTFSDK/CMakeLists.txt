@@ -28,13 +28,12 @@ file(GLOB schema_deps
     "${CMAKE_CURRENT_LIST_DIR}/schema/*"
 )
 
-find_program(POWERSHELL_PATH NAMES pwsh powershell NO_PACKAGE_ROOT_PATH NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH NO_CMAKE_FIND_ROOT_PATH)
-
 add_custom_command(
     OUTPUT ${CMAKE_BINARY_DIR}/GeneratedFiles/SchemaJson.h
-    COMMAND ${POWERSHELL_PATH} -ExecutionPolicy Bypass "${CMAKE_CURRENT_LIST_DIR}/GenerateSchemaJsonHeader.ps1" -outPath "${CMAKE_BINARY_DIR}/GeneratedFiles"
+    COMMAND sh "${CMAKE_CURRENT_LIST_DIR}/generate_schema_json_header.sh" "${CMAKE_BINARY_DIR}/GeneratedFiles"
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-    DEPENDS "${schema_deps}"
+    DEPENDS ${schema_deps}
+    COMMENT "Generating SchemaJson.h..."
 )
 
 add_library(GLTFSDK ${source_files} ${CMAKE_BINARY_DIR}/GeneratedFiles/SchemaJson.h)
